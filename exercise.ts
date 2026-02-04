@@ -15,13 +15,15 @@ export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 
 // [1] Implement
 export function parseUserConfig(input: string): Result<User> {
+  const userKeys = ['id', 'email', 'role'];
   try {
     const parsedInput = JSON.parse(input);
 
-    if (!('id' in parsedInput)) {
+    const missingKey = userKeys.find((key) => !(key in parsedInput));
+    if (missingKey) {
       return {
         ok: false,
-        error: 'Missing field: id',
+        error: `Missing field: ${missingKey}`,
       };
     }
 
@@ -32,24 +34,10 @@ export function parseUserConfig(input: string): Result<User> {
       };
     }
 
-    if (!('email' in parsedInput)) {
-      return {
-        ok: false,
-        error: 'Missing field: email',
-      };
-    }
-
     if (typeof parsedInput.email !== 'string') {
       return {
         ok: false,
         error: 'Invalid type for email field(expected string)',
-      };
-    }
-
-    if (!('role' in parsedInput)) {
-      return {
-        ok: false,
-        error: 'Missing field: role',
       };
     }
 
